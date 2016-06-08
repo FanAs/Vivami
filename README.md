@@ -6,6 +6,7 @@ Using:
 
 2) Do everything you want
 
+3) Call $vivami->save()
 
 
 It's unstable, pet version, so use it on your own risk

@@ -5,6 +5,11 @@
  */
 class Vivami {
 	/** @var string */
+	private $basePath;
+	/** @var string */
+	private $databaseName;
+
+	/** @var string */
 	private $dbHash;
 	/** @var FileIO */
 	private $file;
@@ -20,21 +25,33 @@ class Vivami {
 	 * @param string $database
 	 */
 	public function __construct($basePath, $database) {
+		$this->basePath = $basePath;
+		$this->databaseName = $database;
+	}
+
+	/**
+	 * MUST be called after constructor
+	 *
+	 * @throws Exception
+	 */
+	public function load() {
 		// fallback without autoload
 		if (!class_exists('FileIO')) {
 			require('FileIO.php');
 		}
 
-		$this->init($basePath, $database);
+		$this->init($this->basePath, $this->databaseName);
 	}
 
 	/**
+	 * Initialize all database structure
+	 *
 	 * @param string $basePath
 	 * @param string $database
 	 * @throws Exception
 	 */
 	private function init($basePath, $database) {
-		$this->dbHash = $this->getDbHash($database);
+		$this->dbHash = $this->getDbFileName($database);
 		$this->file = new FileIO(sprintf('%s%s.json', $basePath, $this->dbHash));
 
 		$content = $this->file->get();
@@ -56,7 +73,7 @@ class Vivami {
 	}
 
 	/**
-	 * Saves to file
+	 * Saves changes to file
 	 */
 	public function save() {
 		$this->file->put(json_encode(
@@ -69,18 +86,27 @@ class Vivami {
 	}
 
 	/**
+	 * Get database filename
+	 *
 	 * @param string $database
 	 * @return string
 	 */
-	private function getDbHash($database) {
+	public function getDbFileName($database) {
 		return md5($database);
 	}
 
+	/**
+	 * Returns next item id
+	 *
+	 * @return int
+	 */
 	private function getNewId() {
 		return ++$this->itemsCounter;
 	}
 
 	/**
+	 * Tries to find record with an __ID__ key
+	 *
 	 * @param string $key
 	 * @return bool
 	 */
@@ -89,6 +115,8 @@ class Vivami {
 	}
 
 	/**
+	 * Get record by an __ID__ key
+	 *
 	 * @param string $key
 	 * @return mixed
 	 */
@@ -97,6 +125,8 @@ class Vivami {
 	}
 
 	/**
+	 * Delete value from database by an __ID__ key
+	 *
 	 * @param string $key
 	 * @return void
 	 */
@@ -105,6 +135,8 @@ class Vivami {
 	}
 
 	/**
+	 * Set record's value
+	 *
 	 * @param string $key
 	 * @param mixed $value
 	 * @return bool
@@ -119,6 +151,9 @@ class Vivami {
 	}
 
 	/**
+	 * Insert value in the end of list
+	 * __ID__ property will be automatically added (and deleted if exists)
+	 *
 	 * @param mixed $value
 	 * @return bool
 	 */
@@ -142,6 +177,10 @@ class Vivami {
 	}
 
 	/**
+	 * Returns $limit or all records matching $fields criteria
+	 * Inner array values can be found using dots:
+	 * ['field.innerField' => 1] will match ['field' => ['innerField' => 1]] record
+	 *
 	 * @param array $fields
 	 * @param int $limit
 	 * @return array[array]
@@ -184,8 +223,10 @@ class Vivami {
 	}
 
 	/**
+	 * Returns one record or FALSE
+	 *
 	 * @param array $fields
-	 * @return mixed
+	 * @return array|null
 	 */
 	public function findOne($fields) {
 		$results = $this->find($fields, 1);
