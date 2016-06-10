@@ -18,6 +18,8 @@ class Vivami {
 	/** @var int */
 	private $itemsCounter = 0;
 
+	const ID_KEY = '__ID__';
+
 	/**
 	 * Database constructor
 	 *
@@ -77,12 +79,13 @@ class Vivami {
 	 */
 	public function save() {
 		$this->file->put(json_encode(
-			[
-				'dbHash' => $this->dbHash,
-				'items' => $this->items,
-				'itemsCounter' => $this->itemsCounter
-			]
-		));
+			                 [
+				                 'dbHash' => $this->dbHash,
+				                 'dbName' => $this->databaseName,
+				                 'items' => $this->items,
+				                 'itemsCounter' => $this->itemsCounter
+			                 ]
+		                 ));
 	}
 
 	/**
