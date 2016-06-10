@@ -1,0 +1,13 @@
+{
+    "name": "fanas/vivami",
+    "description": "Micro NoSQL database to store objects in JSON",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Artyom Suchkov",
+            "email": "fanasew@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
