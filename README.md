@@ -4,9 +4,11 @@ Using:
 
 1) $vivami = new Vivami('/path/to/files/', 'some_name')
 
-2) Do everything you want
+2) $vivami->load()
 
-3) Call $vivami->save()
+3) Do everything you want
+
+4) Call $vivami->save()
 
 
 It's unstable, pet version, so use it on your own risk
